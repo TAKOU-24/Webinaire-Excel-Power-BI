@@ -94,22 +94,6 @@
   .urgency strong{ color:var(--gold); }
   .urgency span.sep{ color:var(--border); }
 
-  /* ---------- FORMULA BAR (signature element) ---------- */
-  .formula-bar{
-    max-width:720px; margin:36px auto 0;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
-    display:flex; align-items:stretch; overflow:hidden;
-    font-family:'IBM Plex Mono', monospace; font-size:0.86rem;
-  }
-  .formula-bar .fb-cell{
-    background:var(--surface-2); color:var(--text-muted);
-    padding:11px 14px; border-right:1px solid var(--border);
-    min-width:52px; display:flex; align-items:center; justify-content:center;
-  }
-  .formula-bar .fb-fx{ padding:11px 8px 11px 14px; color:var(--text-muted); }
-  .formula-bar .fb-content{ padding:11px 14px 11px 4px; color:var(--green-bright); flex:1; overflow-x:auto; white-space:nowrap; }
-  .formula-bar .fb-content .placeholder{ color:var(--text-muted); }
-
   /* ---------- SECTION LABELS ---------- */
   .section{ padding:64px 0; }
   .section-head{ text-align:center; max-width:640px; margin:0 auto 44px; }
@@ -291,9 +275,8 @@
 
   <!-- HERO -->
   <section class="hero container">
-    <div class="eyebrow"><span class="dot"></span> A1 · Inscription</div>
     <h1>Choisissez votre formation <span class="accent">Excel</span> ou <span class="accent">Power BI</span></h1>
-    <p class="lead">Sélectionnez la formation qui correspond à votre niveau, complétez vos coordonnées, et recevez la confirmation de votre place directement par email et WhatsApp.</p>
+    <p class="lead">Sélectionnez la formation qui correspond à votre niveau, complétez vos coordonnées, et recevez la confirmation de votre place.</p>
 
     <div class="urgency">
       <span class="flag">🔥</span>
@@ -301,21 +284,11 @@
       <span class="sep">·</span>
       <span>Places limitées</span>
     </div>
-
-    <!-- Signature : barre de formule vivante -->
-    <div class="formula-bar" aria-hidden="true">
-      <div class="fb-cell">B4</div>
-      <div class="fb-fx">fx</div>
-      <div class="fb-content" id="formulaBarContent">
-        <span class="placeholder">=INSCRIPTION( formation ; prénom ; email )</span>
-      </div>
-    </div>
   </section>
 
   <!-- FORMATIONS -->
   <section class="section container" id="formations">
     <div class="section-head">
-      <div class="eyebrow"><span class="dot"></span> B4:B6 · 3 formations</div>
       <h2>Trois formations, un objectif : vous rendre autonome</h2>
       <p>Chaque formation est indépendante. Choisissez celle qui correspond à votre niveau actuel.</p>
     </div>
@@ -332,6 +305,7 @@
           <li>Formules et fonctions essentielles</li>
           <li>Mise en forme et fiabilisation des fichiers</li>
           <li>Tableaux croisés dynamiques</li>
+          <li>Tableau de bord</li>
         </ul>
         <div class="price-row">
           <span class="price-old">150 €</span>
@@ -350,6 +324,7 @@
           <li>Consolidation automatique de fichiers</li>
           <li>Modèles de données et relations</li>
           <li>Introduction au langage DAX</li>
+          <li>Tableau de bord</li>
         </ul>
         <div class="price-row">
           <span class="price-old">200 €</span>
@@ -382,7 +357,6 @@
   <!-- FORMULAIRE -->
   <section class="section container" id="inscription">
     <div class="section-head">
-      <div class="eyebrow"><span class="dot"></span> C9 · Vos coordonnées</div>
       <h2>Finalisez votre inscription</h2>
       <p>Sélectionnez d'abord une formation ci-dessus, puis complétez le formulaire.</p>
     </div>
@@ -453,8 +427,7 @@
     </div>
     <div class="trainer-card">
       <div class="trainer-photo">
-        <!-- Remplacer par la photo de Dimitri : <img src="photo-dimitri.jpg" alt="Dimitri Takou"> -->
-        DT
+        <img src="/formateur.jpg" alt="Dimitri Takou">
       </div>
       <div class="trainer-info">
         <h3>Dimitri Takou</h3>
@@ -516,7 +489,6 @@
   var fsCourseName = document.getElementById('fsCourseName');
   var fsPrice = document.getElementById('fsPrice');
   var formationHidden = document.getElementById('formationChoisie');
-  var formulaBarContent = document.getElementById('formulaBarContent');
   var selectedCourse = null;
 
   function waLink(customText){
@@ -526,17 +498,6 @@
 
   document.getElementById('headerWhatsapp').href = waLink();
   document.getElementById('floatingWhatsapp').href = waLink();
-
-  function updateFormulaBar(){
-    var prenom = document.getElementById('prenom').value.trim();
-    var email = document.getElementById('email').value.trim();
-    var formationLabel = selectedCourse ? selectedCourse.dataset.name : 'formation';
-    if(!selectedCourse && !prenom && !email){
-      formulaBarContent.innerHTML = '<span class="placeholder">=INSCRIPTION( formation ; prénom ; email )</span>';
-      return;
-    }
-    formulaBarContent.textContent = '=INSCRIPTION( "' + formationLabel + '" ; "' + (prenom || 'prénom') + '" ; "' + (email || 'email') + '" )';
-  }
 
   courses.forEach(function(card){
     function selectCard(){
@@ -550,7 +511,6 @@
       formationHidden.value = card.dataset.name;
       submitBtn.disabled = false;
       submitBtn.textContent = "Valider mon inscription — " + card.dataset.price + " €";
-      updateFormulaBar();
 
       document.getElementById('inscription').scrollIntoView({behavior:'smooth', block:'start'});
     }
@@ -558,10 +518,6 @@
     card.addEventListener('keydown', function(e){
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectCard(); }
     });
-  });
-
-  ['prenom','email'].forEach(function(id){
-    document.getElementById(id).addEventListener('input', updateFormulaBar);
   });
 
   // FAQ accordion
